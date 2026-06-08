@@ -99,6 +99,10 @@ However, many third-party implementations use **incorrect pi values** from unkno
 
 This implementation computes the correct pi values independently via dynamic programming over the Berlekamp-Massey state transitions, confirming the values given in the NIST specification.
 
+## Reference document
+
+This implementation is based on [NIST SP 800-22 Rev. 1a](https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-22r1a.pdf) (April 2010). All hardcoded constants — including the pi values for the Longest Run of Ones test (Section 3.4, p. 3-4), the rank probabilities for the Binary Matrix Rank test (Section 3.5, p. 3-6), and the expected values/variances for Maurer's Universal test (Section 2.9, p. 2-22) — have been verified against the original document.
+
 ## Interpreting results
 
 - **p-value >= 0.01**: PASS — no evidence of non-randomness
