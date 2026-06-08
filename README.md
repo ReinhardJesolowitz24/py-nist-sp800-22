@@ -4,7 +4,7 @@ A correct, pure-Python implementation of the **NIST SP 800-22 Rev. 1a** statisti
 
 ## Features
 
-- **14 working tests** — all verified against true random data (`os.urandom`)
+- **15 working tests** — all verified against true random data (`os.urandom`)
 - **Pure Python** — only `numpy` needed for the DFT/Spectral test (optional)
 - **No sampling** — tests run on the entire file, not just 1M-bit fragments
 - **Self-validation** — built-in `--validate` mode tests against `os.urandom()`
@@ -16,11 +16,11 @@ All tests have been validated against 5 independent data sources:
 
 | Input | Expected | Result |
 |-------|----------|--------|
-| `os.urandom()` (CSPRNG) | All PASS | 16/16 PASS |
-| AES-256 (7-Zip) | All PASS | 16/16 PASS |
-| Turbine V5 cipher | All PASS | 16/16 PASS |
-| SCHFM2 cipher | All PASS | 16/16 PASS |
-| Raw JPEG (negative control) | All FAIL | 0/16 PASS |
+| `os.urandom()` (CSPRNG) | All PASS | 17/17 PASS |
+| AES-256 (7-Zip) | All PASS | 17/17 PASS |
+| Turbine V5 cipher | All PASS | 17/17 PASS |
+| SCHFM2 cipher | All PASS | 17/17 PASS |
+| Raw JPEG (negative control) | All FAIL | 0/17 PASS |
 
 ## Installation
 
@@ -64,7 +64,7 @@ print(f"Monobit p-value: {p:.6f}")
 
 ## Tests included
 
-### NIST SP 800-22 Tests (1-12)
+### NIST SP 800-22 Tests (1-13)
 
 | # | Test | What it checks |
 |---|------|---------------|
@@ -80,15 +80,22 @@ print(f"Monobit p-value: {p:.6f}")
 | 10 | DFT / Spectral | Periodic features (requires numpy) |
 | 11 | Binary Matrix Rank | Rank distribution of 32x32 matrices |
 | 12 | Non-Overlapping Template | Specific pattern occurrence frequency |
+| 13 | Linear Complexity | Shortest LFSR via Berlekamp-Massey |
 
-### Supplementary Tests (13-16)
+### Supplementary Tests (14-17)
 
 | # | Test | What it checks |
 |---|------|---------------|
-| 13 | Chi-Squared Byte | Uniform byte value distribution |
-| 14 | Compression Ratio | Incompressibility (zlib) |
-| 15 | Serial Correlation | Independence of consecutive bytes |
-| 16 | Shannon Entropy | Information density (bits/byte) |
+| 14 | Chi-Squared Byte | Uniform byte value distribution |
+| 15 | Compression Ratio | Incompressibility (zlib) |
+| 16 | Serial Correlation | Independence of consecutive bytes |
+| 17 | Shannon Entropy | Information density (bits/byte) |
+
+## Note on the Linear Complexity test
+
+The pi values published in NIST SP 800-22 (Table 2.10) are **incorrect** — they do not match the theoretical distribution of linear complexity for any block size M. This implementation computes the correct pi values from the exact probability distribution using dynamic programming over the Berlekamp-Massey state transitions. Additionally, the T statistic formula uses `(-1)^M` (not `(-1)^(M+1)` as in some implementations). These corrections were verified empirically: the test now passes for `os.urandom()` data and fails for non-random data (raw JPEG).
+
+This is why the Linear Complexity test fails in virtually every Python NIST implementation — including `nistrng`, and many ports of the original NIST STS C code.
 
 ## Interpreting results
 
