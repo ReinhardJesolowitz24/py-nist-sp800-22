@@ -93,11 +93,11 @@ print(f"Monobit p-value: {p:.6f}")
 
 ## Note on the Linear Complexity test
 
-The pi values published in NIST SP 800-22 (Table 2.10) are **incorrect** — they do not match the theoretical distribution of linear complexity for any block size M. This implementation computes the correct pi values from the exact probability distribution using dynamic programming over the Berlekamp-Massey state transitions. Additionally, the T statistic formula uses `(-1)^M` (not `(-1)^(M+1)` as in some implementations). These corrections were verified empirically: the test now passes for `os.urandom()` data and fails for non-random data (raw JPEG).
+The NIST SP 800-22 document (Section 2.10, p. 2-25 and Section 3.10, p. 3-17) and the reference C implementation (STS 2.1.2) both specify the **correct** pi values for this test: `π = [0.010417, 0.03125, 0.125, 0.5, 0.25, 0.0625, 0.020833]`, with the T statistic using `(-1)^M`.
 
-With the incorrect pi values, the test returns p=0.000 (FAIL) for **every input** — including perfectly random data from `os.urandom()`. Empirical testing confirms: 0 out of 50 random trials pass, and no combination of non-random inputs produces a PASS either. The test becomes a dead test with zero diagnostic value, which is why it is silently skipped in most implementations.
+However, many third-party implementations use **incorrect pi values** from unknown sources (e.g., `[0.010882, 0.03568, 0.11765, 0.24279, ...]`), and/or the wrong sign `(-1)^(M+1)` in the T formula. With these wrong values, the test returns p=0.000 (FAIL) for **every input** — including perfectly random data from `os.urandom()`. Empirical testing confirms: 0 out of 50 random trials pass. The test becomes a dead test with zero diagnostic value, which is why it is silently skipped in many implementations.
 
-This affects virtually every existing NIST test suite — including `nistrng`, the original NIST STS C code, and most ports thereof.
+This implementation computes the correct pi values independently via dynamic programming over the Berlekamp-Massey state transitions, confirming the values given in the NIST specification.
 
 ## Interpreting results
 
