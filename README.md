@@ -109,6 +109,16 @@ This implementation is based on [NIST SP 800-22 Rev. 1a](https://nvlpubs.nist.go
 - **p-value < 0.01**: FAIL — statistically significant deviation from randomness
 - A single marginal failure (p near 0.01) on an otherwise good dataset may be a statistical fluke. Multiple failures indicate a real problem.
 
+---
+
+## Related Projects
+
+| Project | Description |
+|---------|-------------|
+| [Turbine V5.2](https://github.com/ReinhardJesolowitz24/Turbine) | Self-developed stream cipher — validated with this test suite |
+| [AES-256-Pure](https://github.com/ReinhardJesolowitz24/AES-256-Pure) | Pure Python AES-256-CTR — validated with this test suite |
+| [encryption-tools](https://github.com/ReinhardJesolowitz24/encryption-tools) | S-Box generator, bias analysis, and cryptographic testing tools |
+
 ## License
 
 MIT License — see [LICENSE](LICENSE).
